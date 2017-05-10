@@ -109,7 +109,30 @@ int main() {
 	glShaderSource(fragmentShader, 1, &fragShaderSource, NULL);
 	glCompileShader(fragmentShader);
 
-	GLuint shaderProgram;
+	fileptr.open("yellowShader.frag");
+	if (fileptr.fail()) {
+		std::printf("Failed to Open Yellow Fragment Shader");
+	}
+
+	fileContents = "";
+	line = "";
+
+	while (std::getline(fileptr, line))
+	{
+		fileContents += line + "\n";
+	}
+
+	std::cout << fileContents << std::endl;
+
+	fileptr.close();
+	const char * yellowFragShaderSource = fileContents.c_str();
+
+	GLuint yellowFragmentShader;
+	yellowFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	glShaderSource(yellowFragmentShader, 1, &yellowFragShaderSource, NULL);
+	glCompileShader(yellowFragmentShader);
+
+	GLuint shaderProgram, yellowShaderProgram;
 	shaderProgram = glCreateProgram();
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
@@ -121,6 +144,11 @@ int main() {
 		std::cout << infoLog << std::endl;
 	}
 
+	yellowShaderProgram = glCreateProgram();
+	glAttachShader(yellowShaderProgram, vertexShader);
+	glAttachShader(yellowShaderProgram, yellowFragmentShader);
+	glLinkProgram(yellowShaderProgram);
+
 	
 
 	glDeleteShader(vertexShader);
@@ -128,10 +156,23 @@ int main() {
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
-		0.5f,  0.5f, 0.0f,  // Top Right
-		0.5f, -0.5f, 0.0f,  // Bottom Right
-		-0.5f, -0.5f, 0.0f,  // Bottom Left
-		-0.5f,  0.5f, 0.0f   // Top Left  
+		//0.5f,  0.5f, 0.0f,  // Top Right
+		//0.5f, -0.5f, 0.0f,  // Bottom Right
+		//-0.5f, -0.5f, 0.0f,  // Bottom Left
+
+		//0.4f,  0.4f, -0.1f,  // Top Right
+		//-0.6f,  0.4f, -0.1f,   // Top Left  
+		//-0.6f, -0.6f, -0.1f,  // Bottom Left
+
+		// First triangle
+		-0.9f, -0.5f, 0.0f,  // Left 
+		-0.0f, -0.5f, 0.0f,  // Right
+		-0.45f, 0.5f, 0.0f,  // Top 
+		// Second triangle
+		0.0f, -0.5f, 0.0f,  // Left
+		0.9f, -0.5f, 0.0f,  // Right
+		0.45f, 0.5f, 0.0f   // Top 
+		
 	};
 
 	GLuint indices[] = {  // Note that we start from 0!
@@ -175,7 +216,13 @@ int main() {
 		// Draw our first triangle
 		glUseProgram(shaderProgram);
 		glBindVertexArray(VAO);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+
+		glUseProgram(yellowShaderProgram);
+
+		glDrawArrays(GL_TRIANGLES, 3, 6);
+
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
