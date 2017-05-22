@@ -12,6 +12,10 @@
 
 #include <SOIL\SOIL.h>
 
+#include <glm\glm.hpp>
+#include <glm\gtc\matrix_transform.hpp>
+#include <glm\gtc\type_ptr.hpp>
+
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -133,6 +137,8 @@ int main() {
 	glGenerateMipmap(GL_TEXTURE_2D);
 	SOIL_free_image_data(image);
 
+
+
 	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
@@ -151,6 +157,14 @@ int main() {
 
 		// Draw our first triangle
 		ourShader.UseShader();
+
+		// Transformation Matrix Stuff.
+		glm::mat4 trans;
+		trans = glm::rotate(trans, glm::radians(timeValue * 50.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		trans = glm::scale(trans, glm::vec3(0.5f, 0.5f, 0.5f));
+
+		GLuint transformLoc = glGetUniformLocation(ourShader.Program, "transform");
+		glUniformMatrix4fv(transformLoc, 1, GL_FALSE, glm::value_ptr(trans));
 
 		GLint vertexOffsetLocation = glGetUniformLocation(ourShader.Program, "vertexOffset");
 
