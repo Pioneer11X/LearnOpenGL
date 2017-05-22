@@ -10,6 +10,8 @@
 #include <string>
 #include "Shader.h"
 
+#include <SOIL\SOIL.h>
+
 #define _CRTDBG_MAP_ALLOC
 #include <stdlib.h>
 #include <crtdbg.h>
@@ -28,8 +30,6 @@ int main() {
 
 	// Set flags for Memory Leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-
-	int * test = new int();
 
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -63,141 +63,20 @@ int main() {
 
 	glViewport(0, 0, width, height);
 
-	//GLuint VBO;
-	//glGenBuffers(1, &VBO);
-	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
 	// Get the Maximum Number of Vertex Attributes.
 	GLint nrAttributes;
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
 	std::cout << "Maximum nr of vertex attributes supported: " << nrAttributes << std::endl;
 
-	////Compile Shaders
-	//std::ifstream fileptr("shader.vert");
-	//if (fileptr.fail()) {
-	//	std::printf("Failed to Open Vertex Shader");
-	//}
-
-	//std::string fileContents = "";
-	//std::string line;
-
-	//while (std::getline(fileptr, line))
-	//{
-	//	fileContents += line + "\n";
-	//}
-
-	//std::cout << fileContents << std::endl;
-
-	//fileptr.close();
-	//const char * vertShaderSource = fileContents.c_str();
-	//
-	//GLuint vertexShader;
-	//vertexShader = glCreateShader(GL_VERTEX_SHADER);
-
-	//glShaderSource(vertexShader, 1, &vertShaderSource, NULL);
-	//glCompileShader(vertexShader);
-
-	//GLint success;
-	//GLchar infoLog[512];
-	//glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-
-	//if (!success)
-	//{
-	//	glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-	//	std::cout << "ERROR::SHADER::VERTEX::COMPILATION_FAILED\n" << infoLog << std::endl;
-	//}
-
-	//fileptr.open("shader.frag");
-	//if (fileptr.fail()) {
-	//	std::printf("Failed to Open Fragment Shader");
-	//}
-
-	//fileContents = "";
-	//line = "";
-
-	//while (std::getline(fileptr, line))
-	//{
-	//	fileContents += line + "\n";
-	//}
-
-	//std::cout << fileContents << std::endl;
-
-	//fileptr.close();
-	//const char * fragShaderSource = fileContents.c_str();
-
-	//GLuint fragmentShader;
-	//fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	//glShaderSource(fragmentShader, 1, &fragShaderSource, NULL);
-	//glCompileShader(fragmentShader);
-
-	//fileptr.open("yellowShader.frag");
-	//if (fileptr.fail()) {
-	//	std::printf("Failed to Open Yellow Fragment Shader");
-	//}
-
-	//fileContents = "";
-	//line = "";
-
-	//while (std::getline(fileptr, line))
-	//{
-	//	fileContents += line + "\n";
-	//}
-
-	//std::cout << fileContents << std::endl;
-
-	//fileptr.close();
-	//const char * yellowFragShaderSource = fileContents.c_str();
-
-	//GLuint yellowFragmentShader;
-	//yellowFragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-	//glShaderSource(yellowFragmentShader, 1, &yellowFragShaderSource, NULL);
-	//glCompileShader(yellowFragmentShader);
-
-	//GLuint shaderProgram, yellowShaderProgram;
-	//shaderProgram = glCreateProgram();
-	//glAttachShader(shaderProgram, vertexShader);
-	//glAttachShader(shaderProgram, fragmentShader);
-	//glLinkProgram(shaderProgram);
-
-	//glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-	//if (!success) {
-	//	glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-	//	std::cout << infoLog << std::endl;
-	//}
-
-	//yellowShaderProgram = glCreateProgram();
-	//glAttachShader(yellowShaderProgram, vertexShader);
-	//glAttachShader(yellowShaderProgram, yellowFragmentShader);
-	//glLinkProgram(yellowShaderProgram);
-
-	//
-
-	//glDeleteShader(vertexShader);
-	//glDeleteShader(fragmentShader);
-
 	Shader ourShader("shader.vert", "shader.frag");
 
 	// Set up vertex data (and buffer(s)) and attribute pointers
 	GLfloat vertices[] = {
-		//0.5f,  0.5f, 0.0f,  // Top Right
-		//0.5f, -0.5f, 0.0f,  // Bottom Right
-		//-0.5f, -0.5f, 0.0f,  // Bottom Left
-
-		//0.4f,  0.4f, -0.1f,  // Top Right
-		//-0.6f,  0.4f, -0.1f,   // Top Left  
-		//-0.6f, -0.6f, -0.1f,  // Bottom Left
-
-		// First triangle		// Colors
-		-0.9f, -0.5f, 0.0f,		1.0f, 0.0f, 0.0f,	 // Left 
-		-0.0f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	 // Right
-		-0.45f, 0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	 // Top 
-
-		// Second triangle
-		0.0f, -0.5f, 0.0f,		0.0f, 0.0f, 1.0f,	 // Left
-		0.9f, -0.5f, 0.0f,		0.0f, 1.0f, 0.0f,	 // Right
-		0.45f, 0.5f, 0.0f,		1.0f, 0.0f, 0.0f	 // Top 
-		
+		// Positions          // Colors           // Texture Coords
+		0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f,   // Top Right
+		0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f,   // Bottom Right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f,   // Bottom Left
+		-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f    // Top Left 
 	};
 
 	GLuint indices[] = {  // Note that we start from 0!
@@ -220,19 +99,41 @@ int main() {
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 	// Position attribute.
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)0);
 	glEnableVertexAttribArray(0);
 
 	// Color Attribute.
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(3 * sizeof(GLfloat)));
 	glEnableVertexAttribArray(1);
+
+	// Text Attrib.
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (GLvoid*)(6 * sizeof(GLfloat)));
+	glEnableVertexAttribArray(2);
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0); // Note that this is allowed, the call to glVertexAttribPointer registered VBO as the currently bound vertex buffer object so afterwards we can safely unbind
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0); This code line causes to crash because this is not passed over to glDrawElements call.
 
 	glBindVertexArray(0); // Unbind VAO (it's always a good thing to unbind any buffer/array to prevent strange bugs)
 
-						  // Game loop
+
+	GLuint texture1;
+	glGenTextures(1, &texture1);
+	glBindTexture(GL_TEXTURE_2D, texture1);
+	int texWidth, texHeight;
+	unsigned char* image = SOIL_load_image("Assets/container.jpg", &texWidth, &texHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+
+	GLuint texture2;
+	glGenTextures(1, &texture2);
+	glBindTexture(GL_TEXTURE_2D, texture2);
+	image = SOIL_load_image("Assets/awesomeface.png", &texWidth, &texHeight, 0, SOIL_LOAD_RGB);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, texWidth, texHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
+	glGenerateMipmap(GL_TEXTURE_2D);
+	SOIL_free_image_data(image);
+
+	// Game loop
 	while (!glfwWindowShouldClose(window))
 	{
 		// Check if any events have been activiated (key pressed, mouse moved etc.) and call corresponding response functions
@@ -250,12 +151,18 @@ int main() {
 
 		// Draw our first triangle
 		ourShader.UseShader();
-		GLint vertexOffsetLocation = glGetUniformLocation(ourShader.Program, "vertexOffset");
-		glBindVertexArray(VAO);
-		glUniform3f(vertexOffsetLocation, redValue, greenValue, blueValue);
-		// glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
 
+		GLint vertexOffsetLocation = glGetUniformLocation(ourShader.Program, "vertexOffset");
+
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, texture1);
+		glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, texture2);
+		glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture2"), 1);
+
+		glBindVertexArray(VAO);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		glBindVertexArray(0);
 
 		// Swap the screen buffers
