@@ -154,6 +154,8 @@ int main() {
 
 		GLint vertexOffsetLocation = glGetUniformLocation(ourShader.Program, "vertexOffset");
 
+		glUniform3f(vertexOffsetLocation, greenValue, redValue, blueValue);
+
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, texture1);
 		glUniform1i(glGetUniformLocation(ourShader.Program, "ourTexture1"), 0);
