@@ -32,6 +32,8 @@
     <None Include="yellowShader.frag">
       <Filter>Source Files</Filter>
     </None>
+    <None Include="lightShader.frag" />
+    <None Include="lightShader.vert" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Shader.h">
